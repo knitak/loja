@@ -14,7 +14,7 @@ describe "UserPages" do
 
   	describe "pesquisa page" do
 
-  	before { visit pesquisa_path }
+  		before { visit pesquisa_path }
     
     	it { should have_selector('h1',    text: 'Pesquisa') }
     	it { should have_selector('title', text: full_title('Pesquisa')) }
@@ -25,22 +25,62 @@ describe "UserPages" do
 
     	let(:submit) { "Create my account" }
 
-    describe "with invalid information" do
-      it "should not create a user" do
-        expect { click_button submit }.not_to change(User, :count)
-      end
+    	describe "with invalid information" do
+      		it "should not create a user" do
+        	expect { click_button submit }.not_to change(User, :count)
+      	end
     end
+    
 
     describe "with valid information" do
-      before do
-        fill_in "Name",         with: "Example User"
-        fill_in "Address",      with: "Rua do Sobe e Desce"
-        fill_in "Postalcode",   with: "1234-567"
-      end
+      	before do
+        	fill_in "Name",         with: "Example User"
+        	fill_in "Address",      with: "Rua do Sobe e Desce"
+        	fill_in "Postalcode",   with: "1234-567"
+      	end
 
-      it "should create a user" do
-        expect { click_button submit }.to change(User, :count).by(1)
+      	it "should create a user" do
+        	expect { click_button submit }.to change(User, :count).by(1)
+      	end
+
+      	describe "after saving the user" do
+        	
+        	it { should have_link('Sign out') }
+      	end
       end
     end
-  end
+
+    describe "edit" do
+   		let(:user) { FactoryGirl.create(:user) }
+   		before { visit edit_user_path(user) }
+
+   		describe "page" do
+   			it { should have_selector('h1', text: "Update your profile") }
+   			it { should have_selector('title', text: "Edit user") }
+   			it { should have_link('change', href: 'http://gravatar.com/emails') }
+   		end
+
+
+    describe "with invalid information" do
+    	before { click_button "Save changes" }
+
+   			it { should have_content('error') }
+   		end
+
+   		describe "with valid information" do
+        let(:new_name)  { "New Name" }
+        let(:new_postalcode) { "1234-567" }
+        before do
+          fill_in "Name",             with: new_name
+          fill_in "Address",          with: new_address
+          fill_in "Postalcode",       with: user.postalcode
+          click_button "Save changes"
+        end
+    	it { should have_selector('title', text: new_name) }
+        it { should have_selector('div.alert.alert-success') }
+        it { should have_link('Sign out', href: signout_path) }
+        specify { user.reload.name.should  == new_name }
+        specify { user.reload.postalcode.should == new_postalcode }
+      end
+    end
 end

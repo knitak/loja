@@ -13,15 +13,17 @@
 require 'spec_helper'
 
 describe User do
-  before { @user = User.new(name: "Example User",
-  							address: "Rua x",
-  							postalcode: "1234-567") }
+  before do
+    @user = User.new(name: "Example User",address: "Rua x",
+  							     postalcode: "1234-567")
+  end
 
   subject { @user }
 
   it { should respond_to(:name) }
   it { should respond_to(:address) }
   it { should respond_to(:postalcode) }
+  it { should respond_to(:remember_token) }
 
   it { should be_valid }
 
@@ -47,5 +49,10 @@ describe User do
     #end
 
     #it { should_not be_valid }
-  #end 
+  #end
+
+  describe "remember token" do
+    before { @user.save }
+    its(:remember_token) { should_not be_blank }
+  end 
 end
