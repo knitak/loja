@@ -23,9 +23,37 @@ describe User do
   it { should respond_to(:name) }
   it { should respond_to(:address) }
   it { should respond_to(:postalcode) }
+  it { should respond_to(:admin) }
+  it { should respond_to(:authenticate) }
   it { should respond_to(:remember_token) }
 
   it { should be_valid }
+  it { should_not be_admin }
+
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+    end
+
+  describe "with valid postalcode" do
+     it { should == found_user.authenticate(@user.postalcode) }
+  end
+
+    it { should be_admin }
+  end
+
+  describe "with invalid postalcode" do
+      let(:user_for_invalid_postalcode) { found_user.authenticate("invalid") }
+
+      it { should_not == user_for_invalid_postalcode }
+      specify { user_for_invalid_postalcode.should be_false }
+    end
+  end
+
+  describe "return value of authenticate method" do
+    before { @user.save }
+    let(:found_user) { User.find_by_name(@user.name) }
 
   describe "Quando o nome nao existe" do
     before { @user.name = " " }

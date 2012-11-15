@@ -6,10 +6,10 @@ class SessionsController < ApplicationController
     	user = User.find_by_postalcode(params[:session][:postalcode])
   		if user && user.authenticate(params[:session][:postalcode])
     		sign_in user
-      		redirect_to user
+      	redirect_to user
   		else
-    		flash[:error] = 'Invalid name/postalcode combination' 
-      		render 'new'
+    		flash.now[:error] = 'Invalid name/postalcode combination' 
+      	render 'new'
   		end
   	end
 
