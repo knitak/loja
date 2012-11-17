@@ -6,7 +6,7 @@ Loja::Application.routes.draw do
 
   #root to: 'static_pages#home'
   #get 'static_pages/home'
-  match "/static_pages/home" => "static_pages#home", :as => :root
+  match "/home" => "static_pages#home", :as => :root
 
   match '/escrita', to: 'static_pages#escrita'
   match '/pesquisa', to: 'users#search'
