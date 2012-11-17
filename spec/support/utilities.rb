@@ -1,8 +1,9 @@
 include ApplicationHelper
 
 def valid_signin(user)
-  fill_in "Name",    with: user.name
-  fill_in "Postalcode", with: user.postalcode
+  fill_in "Email",    with: user.email
+  fill_in "Password", with: user.password
+  fill_in "Password Confirmation", with: user.password_confirmation
   click_button "Sign in"
 end
 
@@ -14,8 +15,9 @@ end
 
 def sign_in(user)
   visit signin_path
-  fill_in "Name",    with: user.name
-  fill_in "Postalcode", with: user.postalcode
+  fill_in "Email",    with: user.email
+  fill_in "Password", with: user.password
+  fill_in "Password Confirmation", with: user.password_confirmation
   click_button "Sign in"
   cookies[:remember_token] = user.remember_token
 end

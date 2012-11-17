@@ -1,0 +1,7 @@
+<li>
+  <%= link_to shop.name, shop %>
+  <% if current_shop.admin? && !current_shop?(shop) %>
+     <%= link_to "delete", user, method: :delete,
+                                  data: { confirm: "De certeza?" } %>
+  <% end %>
+</li>

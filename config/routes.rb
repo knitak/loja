@@ -1,5 +1,7 @@
 Loja::Application.routes.draw do
 
+  get "shop/new"
+
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
  
@@ -9,7 +11,7 @@ Loja::Application.routes.draw do
   match "/static_pages/home" => "static_pages#home", :as => :root
 
   match '/escrita', to: 'static_pages#escrita'
-  match '/pesquisa', to: 'users#search'
+  match '/pesquisa', to: 'shops#search'
 
   match '/signup', to: 'users#new'
   match '/signin', to: 'sessions#new'

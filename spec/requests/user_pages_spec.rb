@@ -4,14 +4,14 @@ describe "UserPages" do
 
 	subject { page }
 
-  describe "index" do
+  let(:user) { FactoryGirl.create(:user) }
 
-    let(:user) { FactoryGirl.create(:user) }
+  describe "index" do
 
     before(:each) do
       sign_in user
       visit users_path
-    end
+    
 
     #before do
      # sign_in FactoryGirl.create(:user)
@@ -19,8 +19,10 @@ describe "UserPages" do
       #visit users_path
     #end
 
-    it { should have_selector('title', text: 'All users') }
-    it { should have_selector('h1',    text: 'All users') }
+      it { should have_selector('title', text: 'All users') }
+      it { should have_selector('h1',    text: 'All users') }
+    end
+
 
     describe "pagination" do
 
@@ -30,8 +32,8 @@ describe "UserPages" do
       it { should have_selector('div.pagination') }
 
 
-    it "should list each user" do
-      User.paginate(page: 1).each do |user|
+      it "should list each user" do
+        User.paginate(page: 1).each do |user|
       #User.all.each do |user|
         page.should have_selector('li', text: user.name)
       end
@@ -65,14 +67,17 @@ describe "UserPages" do
     	it { should have_selector('h1',    text: user.name) }
     	it { should have_selector('title', text: user.name) }
   	end
+  end
 
-  	describe "pesquisa page" do
+  describe "pesquisa page" do
 
-  		before { visit pesquisa_path }
+  	before { visit pesquisa_path }
+
+    let(:submit) { "Pesquisar" }
     
-    	it { should have_selector('h1',    text: 'Pesquisa') }
-    	it { should have_selector('title', text: full_title('Pesquisa')) }
-  	end
+    it { should have_selector('h1',    text: 'Pesquisa') }
+    it { should have_selector('title', text: full_title('Pesquisa')) }
+  end
 
   	describe "signup page" do
     	before { visit signup_path }
@@ -83,14 +88,18 @@ describe "UserPages" do
       		it "should not create a user" do
         	expect { click_button submit }.not_to change(User, :count)
       	end
+      end
     end
     
 
     describe "with valid information" do
       	before do
-        	fill_in "Name",         with: "Example User"
-        	fill_in "Address",      with: "Rua do Sobe e Desce"
-        	fill_in "Postalcode",   with: "1234-567"
+        	fill_in "Name",                    with: "Example User"
+        	fill_in "Address",                 with: "Rua do Sobe e Desce"
+        	fill_in "Postalcode",              with: "1234-567"
+          fill_in "Email",                   with: "Example@user.com"
+          fill_in "Password",                with: "Password"
+          fill_in "Password_Confirmation",   with: "Password"
       	end
 
       	it "should create a user" do
@@ -124,12 +133,18 @@ describe "UserPages" do
    		end
 
    		describe "with valid information" do
-        let(:new_name)  { "New Name" }
+        let(:new_name)       { "New Name" }
+        let(:new_email)      { "Example@user.com" }
+        let(:new_address)    { "Rua do Sobe e Desce" }
         let(:new_postalcode) { "1234-567" }
+
         before do
-          fill_in "Name",             with: new_name
-          fill_in "Address",          with: new_address
-          fill_in "Postalcode",       with: user.postalcode
+          fill_in "Name",                    with: new_name
+          fill_in "Address",                 with: new_address
+          fill_in "Postalcode",              with: user_postalcode
+          fill_in "Email",                   with: user_email
+          fill_in "Password",                with: user.password
+          fill_in "Password_Confirmation",   with: user.password_confirmation
           click_button "Save changes"
         end
     	  
@@ -138,6 +153,9 @@ describe "UserPages" do
         it { should have_link('Sign out', href: signout_path) }
         specify { user.reload.name.should  == new_name }
         specify { user.reload.postalcode.should == new_postalcode }
+        specify { user.reload.email.should  == new_email }
+        specify { user.reload.address.should  == new_address }
       end
     end
+  end
 end
